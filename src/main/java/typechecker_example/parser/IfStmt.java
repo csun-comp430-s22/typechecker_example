@@ -12,4 +12,27 @@ public class IfStmt implements Stmt {
         this.trueBranch = trueBranch;
         this.falseBranch = falseBranch;
     }
+
+    public int hashCode() {
+        return (guard.hashCode() +
+                trueBranch.hashCode() +
+                falseBranch.hashCode());
+    }
+
+    public boolean equals(final Object other) {
+        if (other instanceof IfStmt) {
+            final IfStmt otherIf = (IfStmt)other;
+            return (guard.equals(otherIf.guard) &&
+                    trueBranch.equals(otherIf.trueBranch) &&
+                    falseBranch.equals(otherIf.falseBranch));
+        } else {
+            return false;
+        }
+    }
+
+    public String toString() {
+        return ("IfStmt(" + guard.toString() + ", " +
+                trueBranch.toString() + ", " +
+                falseBranch.toString() + ")");
+    }
 }
