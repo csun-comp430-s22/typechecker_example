@@ -5,8 +5,6 @@ import typechecker_example.parser.*;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
 
 public Typechecker {
     public final Program program;
