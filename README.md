@@ -61,3 +61,5 @@ int myFunction() {
   if (int < int) { return int; } else { return int; }
 }
 ```
+
+- `true < false`: type error
