@@ -4,9 +4,13 @@ import typechecker_example.parser.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.HashSet;
 
 public Typechecker {
-    public final List<Fdef> functions;
+    public final Program program;
+    public final Map<FunctionName, Fdef> functions;
 
     // Signature (usually): name, parameter types
     //
@@ -18,19 +22,24 @@ public Typechecker {
     // foo(int, bool)
     //
     public Typechecker(final Program program) throws TypeErrorException {
-        this.functions = program.functions;
-        // what if two functions have the same name?
-        // TODO - reject two functions with the same name
+        this.program = program;
+        functions = new HashMap<FunctionName, FDef>();
+        for (final Fdef fdef : program.functions) {
+            if (!functions.containsKey(fdef.fname)) {
+                functions.put(fdef.fname, fdef);
+            } else {
+                throw new TypeErrorException("Function with duplicate name: " + fdef.fname);
+            }
+        }
     }
 
     public Fdef getFunctionByName(final FunctionName fname) throws TypeErrorException {
-        for (final Fdef fdef : functions) {
-            if (fdef.fname.equals(fname)) {
-                return fdef;
-            }
+        final FDef fdef = functions.get(fname);
+        if (fdef == null) {
+            throw new TypeErrorException("No such function with name: " + fname);
+        } else {
+            return fdef;
         }
-
-        throw new TypeErrorException("No such function with name: " + fname);
     }
     
     // int foo(int x, bool y) { ... }
