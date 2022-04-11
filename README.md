@@ -40,8 +40,7 @@ stmt ::= vardec = exp; |
          if (exp) stmt else stmt |
          while (exp) stmt |
          return exp; |
-         { stmt* } |
-         var[exp] = exp
+         { stmt* }
 fdef ::= type fname(vardec*) stmt
 program ::= fdef*
 ```
