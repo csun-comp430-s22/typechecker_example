@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
-public Typechecker {
+public class Typechecker {
     public final Program program;
     // if the functions were overloaded:
     // public final Map<Signature, Fdef> functions;
@@ -34,7 +34,7 @@ public Typechecker {
     //
     public Typechecker(final Program program) throws TypeErrorException {
         this.program = program;
-        functions = new HashMap<FunctionName, FDef>();
+        functions = new HashMap<FunctionName, Fdef>();
         for (final Fdef fdef : program.functions) {
             if (!functions.containsKey(fdef.fname)) {
                 functions.put(fdef.fname, fdef);
@@ -45,7 +45,7 @@ public Typechecker {
     }
 
     public Fdef getFunctionByName(final FunctionName fname) throws TypeErrorException {
-        final FDef fdef = functions.get(fname);
+        final Fdef fdef = functions.get(fname);
         if (fdef == null) {
             throw new TypeErrorException("No such function with name: " + fname);
         } else {
@@ -60,8 +60,8 @@ public Typechecker {
     // 1. Is foo a function?
     // 2. Does foo take an integer and a boolean? - (int, bool)
     // 3. Does foo return an integer?
-    public static Type typeofFunctionCall(final FunctionCallExp exp,
-                                          final Map<Variable, Type> typeEnvironment) throws TypeErrorException {
+    public Type typeofFunctionCall(final FunctionCallExp exp,
+                                   final Map<Variable, Type> typeEnvironment) throws TypeErrorException {
         // what are functions?  Are they data?  Are they somehow special?
         final Fdef fdef = getFunctionByName(exp.fname);
         if (exp.params.size() != fdef.arguments.size()) {
@@ -130,7 +130,7 @@ public Typechecker {
                 return variableType;
             }
         } else if (exp instanceof OpExp) {
-            return typeofOpExp((OpExp)exp, typeEnvironment);
+            return typeofOp((OpExp)exp, typeEnvironment);
         } else if (exp instanceof FunctionCallExp) {
             return typeofFunctionCall((FunctionCallExp)exp, typeEnvironment);
         } else {
@@ -167,7 +167,6 @@ public Typechecker {
     public Map<Variable, Type> typecheckIf(final IfStmt asIf,
                                            final Map<Variable, Type> typeEnvironment,
                                            final Type returnType) throws TypeErrorException {
-        final IfStmt asIf = (IfStmt)stmt;
         final Type receivedType = typeof(asIf.guard, typeEnvironment);
         if (receivedType.equals(new BoolType())) {
             // if (...) {
@@ -199,7 +198,6 @@ public Typechecker {
     public Map<Variable, Type> typecheckReturn(final ReturnStmt asReturn,
                                                final Map<Variable, Type> typeEnvironment,
                                                final Type returnType) throws TypeErrorException {
-        final ReturnStmt asReturn = (ReturnStmt)stmt;
         final Type receivedType = typeof(asReturn.exp, typeEnvironment);
         if (returnType.equals(receivedType)) {
             return typeEnvironment;
