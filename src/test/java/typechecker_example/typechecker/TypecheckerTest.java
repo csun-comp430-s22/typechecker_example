@@ -10,16 +10,39 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class TypecheckerTest {
+    public static final Map<Variable, Type> emptyTypeEnvironment =
+        new HashMap<Variable, Type>();
+
+    public static Type typeof(final Exp exp) throws TypeErrorException {
+        // idealized lexer:
+        // public static List<Token> tokenize(final String input);
+        //
+        // idealized parser:
+        // public static Program parse(final List<Token> tokens);
+        //
+        // new Typechecker(parse(tokenize("")))
+        // final String input =
+        //   "int add(int x, int y) { return x + y; }\n" +
+        //   "int main() { return add(2, 3); }\n";
+        // new Typechecker(parse(tokenize(input)));
+        //
+        // new Program(Arrays.asList(new Fdef[]{ new Fdef(new FunctionName("add")...
+        final Typechecker emptyTypechecker =
+            new Typechecker(new Program(new ArrayList<Fdef>()));
+        return emptyTypechecker.typeof(exp, emptyTypeEnvironment);
+    }
+    
     @Test
     public void testTypeofBoolean() throws TypeErrorException {
         // true -> bool
-        final Typechecker typechecker =
-            new Typechecker(new Program(new ArrayList<Fdef>()));
-        final Map<Variable, Type> typeEnvironment =
-            new HashMap<Variable, Type>();
-        
-        final Type receivedType = typechecker.typeof(new BooleanLiteralExp(true),
-                                                     typeEnvironment);
-        assertEquals(new BoolType(), receivedType);
+        assertEquals(new BoolType(),
+                     typeof(new BooleanLiteralExp(true)));
+    }
+
+    @Test
+    public void testTypeofInteger() throws TypeErrorException {
+        // 1 -> int
+        assertEquals(new IntType(),
+                     typeof(new IntegerLiteralExp(1)));
     }
 }
